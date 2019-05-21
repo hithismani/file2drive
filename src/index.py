@@ -8,7 +8,8 @@ def transfer(args):
 
     dir_src = (args.source)  #Source Directory
     dir_dst = (args.dest)  #Destination Directory
-    dir_duplicates = (args.removedstdupli)
+    dir_duplicates = (args.removedstextra)
+    to_force = args.force.lower()
     #Initialize Report Figures
     existing_file = 0
     new_files = 0
@@ -16,12 +17,12 @@ def transfer(args):
     files_removed = []
     quick_ref = "Not Set"
 
-    dirtransfer.sourceToDest(dir_src,dir_dst,existing_file,new_files)
+    dirtransfer.sourceToDest(dir_src,dir_dst,existing_file,new_files,to_force)
 
-    if args.removedstdupli=="True":
-        dirtransfer.destDupliDelete(dir_src,dir_dst,unmatched)
+    if args.removedstextra.lower()=="true":
+        dirtransfer.destDupliDelete(dir_src,dir_dst,unmatched,to_force)
     
-    if args.saveopts == "True":
+    if args.saveopts.lower() == "true":
         origin_folder = os.path.basename(os.path.normpath(dir_src))
         optionsfile.saveToOptions(origin_folder,dir_src, dir_dst,dir_duplicates)
         quick_ref = origin_folder
@@ -38,8 +39,10 @@ def main(args):
     parser=argparse.ArgumentParser(description="picToSquare")
     parser.add_argument("-source",help="Set Source Directory",dest="source",type=str,required=True)
     parser.add_argument("-destination",help="Set Destination Directory",dest="dest",type=str,required=True)
-    parser.add_argument("-removeDestinationDuplicates",help="Remove Extra Files Not In Source Directory",dest="removedstdupli",type=str,default="False",required=False)
+    parser.add_argument("-removeDestinationExtras",help="Remove Extra Files Not In Source Directory",dest="removedstextra",type=str,default="False",required=False)
     parser.add_argument("-saveOptions",help="Remove Extra Files Not In Source Directory",dest="saveopts",type=str,default="False",required=False)
+    parser.add_argument("-forceSpeed",help="For Test Purposes Only. Not Recommended",dest="force",type=str,default="False",required=False)
+
     parser.set_defaults(func=transfer)
     args=parser.parse_args()
     args.func(args)
